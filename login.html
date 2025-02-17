@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Авторизация</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: #ffffff;
+        background: linear-gradient(45deg, #2a2dd4, #2ba6d6, #a5e0f1, #b5d8f0, #a5e0f1, #2ba6d6, #2a2dd4);
+        background-size: 400% 400%;
+        animation: gradientBackground 15s ease infinite;
+        }
+
+        @keyframes gradientBackground {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+        }
+        .container {
+            width: 400px;
+            margin: 150px auto;
+            background: rgba(255, 255, 255, 0.1); /* Полупрозрачный белый */
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px); /* Размытие фона */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Легкая граница */
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            text-align: center;
+            font-size: 50px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #8b90e9;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #c0c6fc;
+        }
+        a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .form-container {
+            display: none;
+        }
+        .right-align {
+            text-align: right;
+        }
+        .password-input-container {
+        position: relative;
+    }
+
+    .password-input-container button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: #c0c6fc;
+            font-size: 16px;
+        }
+
+        .password-input-container button:hover {
+            color: #838ff7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="auth-container">
+        <h2><strong>Авторизация</strong></h2>
+        <form action="bd.php" method="POST" onsubmit="return authorizeUser()">
+            <input type="text" name="email" id="email" placeholder="Почта" required>
+            <div class="password-input-container">
+                <input type="password" name="password" id="password" placeholder="Пароль" pattern=".{4,}" title="Пароль должен содержать не менее 4 символов" required>
+                <button type="button" onclick="togglePasswordVisibility()">
+                    <i class="fas fa-eye" id="eye-icon"></i>
+                </button>
+            </div>
+            <span id="auth-message" style="display: none;"></span>
+            <input type="submit" value="Войти" id="login-button">
+        </form>
+        <p><a href="#" onclick="showForm('forgot-password-form')" class="right-align">Забыл пароль</a> | <a href="#" onclick="showForm('registration-form')">Регистрация</a></p>
+    </div>  
+
+<div class="container form-container" id="forgot-password-form">
+    <h2><strong>Забыл пароль</strong></h2>
+    <form action="forgotpass.php" method="POST" onsubmit="return checkUserExistence()">
+        <input type="email" name="email" id="forgot-email" placeholder="Почта" required>
+        <span id="forgot-message" style="display: none;"></span>
+        <input type="submit" value="Далее" id="forgot-button">
+    </form>
+    <p><a href="#" onclick="showForm('auth-container')" class="right-align">Назад</a></p>
+</div>
+
+<div class="container form-container" id="verification-code-form">
+    <h2><strong>Подтверждение кода</strong></h2>
+    <form action="confirmcode.php" method="POST" onsubmit="return checkConfirmationCode()">
+        <input type="text" name="verification-code" id="verification-code" placeholder="Код из письма" required>
+        <span id="confirmation-message" style="display: none;"></span>
+        <input type="submit" value="Подтвердить">
+    </form>
+    <p><a href="#" onclick="showForm('forgot-password-form')" class="right-align">Назад</a></p>
+</div>
+
+    <div class="container form-container" id="new-password-form">
+        <h2><strong>Новый пароль</strong></h2>
+        <form action="changepassword.php" method="POST" onsubmit="return UpdateUserPassword()">
+            <div class="password-input-container">
+                <input type="password" name="new-set-password" id="new-set-password" placeholder="Новый пароль" pattern=".{4,}" title="Пароль должен содержать не менее 4 символов" required>
+                <button type="button" onclick="togglePasswordVisibility()">
+                    <i class="fas fa-eye" id="eye-icon"></i>
+                </button>
+            </div>
+            <span id="confirmation-password" style="display: none;"></span>
+            <input type="submit" value="Сменить пароль">
+        </form>
+    </div>
+
+    <div class="container form-container" id="registration-form">
+        <h2><strong>Регистрация</strong></h2>
+        <form action="register.php" method="post" onsubmit="return validateForm()">
+            <input type="text" id="new-username" name="name" placeholder="Ник" required>
+            <input type="email" id="new-email" name="email" placeholder="Почта" required oninput="checkEmail()">
+            <input type="password" id="new-password" name="pass" placeholder="Пароль" pattern=".{4,}" title="Пароль должен содержать не менее 8 символов" required>
+            <span id="email-validation-message"></span>
+            <span id="user-check-message"></span>
+            <input type="submit" value="Регистрация">
+        </form>
+        <p>Уже есть аккаунт? <a href="#" onclick="showForm('auth-container')">Авторизация</a></p>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById('password');
+            var eyeIcon = document.getElementById('eye-icon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+
+    <script>
+        var confirmEmail = "";
+        var confirmationCode = "";
+
+        function authorizeUser() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var authMessage = document.getElementById('auth-message');
+    
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "bd.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            authMessage.innerHTML = "Успешная авторизация";
+                            authMessage.style.color = "green";
+                            localStorage.setItem("email", email);
+                            localStorage.setItem("password", password);
+                            window.location.href = "index.html";
+                        } else if (response.status === 'wrong_password') {
+                            authMessage.innerHTML = "Неправильный логин или пароль";
+                            authMessage.style.color = "yellow";
+                        } else {
+                            authMessage.innerHTML = "Пользователь не существует";
+                            authMessage.style.color = "red";
+                        }
+                        authMessage.style.display = "block";
+                    } else {
+                        authMessage.innerHTML = "Ошибка при отправке запроса";
+                        authMessage.style.color = "red";
+                        authMessage.style.display = "block";
+                    }
+                }
+            };
+            xhr.send("email=" + email + "&password=" + password);
+            return false; // Отмена отправки формы
+        }
+
+    function checkUserExistence() {
+        var email = document.getElementById('forgot-email').value;
+        var forgotMessage = document.getElementById('forgot-message');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "forgotpass.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        forgotMessage.innerHTML = "";
+                        forgotMessage.style.color = "green";
+                        confirmEmail = email;
+                        confirmCodeAndRedirect(); // Передаем email в confirmcode.php и переключаемся на verification-code-form
+                    } else {
+                        forgotMessage.innerHTML = "Пользователь не существует";
+                        forgotMessage.style.color = "red";
+                    }
+                    forgotMessage.style.display = "block";
+                }
+            }
+        };
+        xhr.send("email=" + email);
+        return false; // Отмена отправки формы
+    }
+
+    function UpdateUserPassword() {
+        var newPassword = document.getElementById('new-set-password').value;
+        var confirmationPassword = document.getElementById('confirmation-password');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "changepassword.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        confirmationPassword.innerHTML = "";
+                        confirmationPassword.style.color = "green";
+                        showForm('auth-container');
+                    } else {
+                        confirmationPassword.innerHTML = "Пароль несменен";
+                        confirmationPassword.style.color = "red";
+                    }
+                    confirmationPassword.style.display = "block";
+                }
+            }
+        };
+        xhr.send("email=" + confirmEmail + "&newPassword=" + newPassword);
+        return false; // Отмена отправки формы
+    }
+
+    function confirmCodeAndRedirect() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "confirmcode.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                        confirmationCode = response.confirmationCode;
+                        showForm('verification-code-form');
+                    }
+            }
+        };
+        xhr.send("email=" + confirmEmail); // Передача email в confirmcode.php
+    }
+
+    function checkConfirmationCode() {
+        var enteredCode = document.getElementById('verification-code').value;
+        var confirmationMessage = document.getElementById('confirmation-message');
+                        if (enteredCode === confirmationCode) {
+                            confirmationMessage.innerHTML = "";
+                            confirmationMessage.style.color = "green";
+                            showForm('new-password-form');
+                            // Дополнительное действие после успешной проверки, если нужно
+                        } else {
+                            confirmationMessage.innerHTML = "Неправильный код";
+                            confirmationMessage.style.color = "red";
+                        }
+                        confirmationMessage.style.display = "block";
+        return false; // Отмена отправки формы
+    }
+</script>
+    
+    <script>
+        function validateForm() {
+            var email = document.getElementById('new-email').value;
+            var name = document.getElementById('new-username').value;
+            var password = document.getElementById('new-password').value;
+            var emailValidationMessage = document.getElementById('email-validation-message');
+            var userCheckMessage = document.getElementById('user-check-message');
+    
+            // Проверка формата электронной почты
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailValidationMessage.innerHTML = "Неправильный формат электронной почты.";
+                userCheckMessage.innerHTML = "";
+                return false; // Отмена отправки формы
+            }
+    
+            // AJAX запрос к серверу
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "register.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Получение ответа от сервера
+                        var response = xhr.responseText;
+                        userCheckMessage.innerHTML = response;
+                        // Если пользователь не найден, разрешаем отправку формы
+                        if (response.trim() === "") {
+                            document.getElementById("registration-form").submit();
+                        }
+                    } else {
+                        userCheckMessage.innerHTML = "Ошибка при проверке почты.";
+                    }
+                }
+            };
+            xhr.send("email=" + email + "&name=" + name + "&pass=" + password);
+            return false; // Отмена отправки формы до получения ответа от сервера
+        }
+    </script>
+
+    <script>
+        function showForm(formId) {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('forgot-password-form').style.display = 'none';
+            document.getElementById('verification-code-form').style.display = 'none';
+            document.getElementById('new-password-form').style.display = 'none';
+            document.getElementById('registration-form').style.display = 'none';
+
+            document.getElementById(formId).style.display = 'block';
+        }
+    </script>
+</body>
+</html>

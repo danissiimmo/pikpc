@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/adminstyle.css">
+    <link rel="icon" href="items/header/mini-logo.png" type="image/x-icon">
+    <title>Панель администратора</title>
+</head>
+<body>
+
+    <!-- Панель авторизации -->
+    <div class="auth-container active" id="auth-container">
+        <img src="items/header/logo.png" alt="Логотип">
+        <input id="username" type="text" placeholder="Введите логин">
+        <input id="password" type="password" placeholder="Введите ключ">
+        <button id="auth-btn">Авторизация</button>
+        <p id="error-msg" class="error"></p>
+    </div>
+
+    <!-- Панель управления -->
+    <div class="dashboard-container" id="dashboard-container">
+        <img src="items/header/logo.png" alt="Логотип">
+        <button id="edit-ads-btn">Редактирование рекламы</button>
+        <button id="edit-attributes-btn">Редактирование атрибутов</button>
+        <button id="manage-products-btn">Добавление товаров</button>
+        <button id="delete-products-btn">Удаление товаров</button>
+        <button id="edit-email-btn">Смена почты</button>
+        <button id="check-orderlist-btn">Заказы</button>
+        <button id="maintenance-btn">Закрыть сайт на техническое обслуживание</button>
+        <button id="edit-contacts-btn">Смена ссылок/контактов/адресов/времени</button>
+        <button id="exit-btn">Выход</button>
+    </div>
+
+    <div class="edit-email-container" id="edit-email-container" style="display: none;">
+        <button id="back-btn-email">← Назад</button>
+        <h2>Смена почты</h2>
+        <input type="text" id="edit-email-title" placeholder="Введите новую почту">
+        <button id="edit-email-btn-load">Обновить почту</button>
+        <div id="edit-result"></div>
+    </div>
+
+    <div class="edit-contacts-container" id="edit-contacts-container" style="display: none;">
+        <button id="back-btn-contacts">← Назад</button>
+        <h2>Смена контакта в хереде (Тех.поддержка)</h2>
+        <input type="text" id="edit-contacts-title" placeholder="Введите ссылку на новый контакт">
+        <button id="edit-contacts-btn-load">Обновить контакт</button>
+        <div id="edit-result-contacts"></div>
+
+        <h2>Смена контакта в подвале (ВК)</h2>
+        <input type="text" id="edit-contactsvk-title" placeholder="Введите ссылку на новый контакт">
+        <button id="edit-contactsvk-btn-load">Обновить контакт</button>
+        <div id="edit-result-contactsvk"></div>
+
+        <h2>Смена контакта в подвале (ТГ)</h2>
+        <input type="text" id="edit-contactstg-title" placeholder="Введите ссылку на новый контакт">
+        <button id="edit-contactstg-btn-load">Обновить контакт</button>
+        <div id="edit-result-contactstg"></div>
+
+        <h2>Смена контакта в подвале (ВАТСАП)</h2>
+        <input type="text" id="edit-contactswt-title" placeholder="Введите ссылку на новый контакт">
+        <button id="edit-contactswt-btn-load">Обновить контакт</button>
+        <div id="edit-result-contactswt"></div>
+
+        <h2>Смена времени работы</h2>
+        <input type="text" id="edit-contactstime-title" placeholder="Введите время работы (Пн-Вс, 10:00-20:00)">
+        <button id="edit-contactstime-btn-load">Обновить время</button>
+        <div id="edit-result-contactstime"></div>
+
+        <h2>Смена номера телефона</h2>
+        <input type="text" id="edit-contactsphone-title" placeholder="Введите телефон (78901112233)">
+        <button id="edit-contactsphone-btn-load">Обновить номер</button>
+        <div id="edit-result-contactsphone"></div>
+
+        <h2>Смена текста возврата</h2>
+        <textarea id="edit-contactsreturn-title" placeholder="Введите новый текст для страницы возврата"></textarea>
+        <button id="edit-contactsreturn-btn-load">Обновить текст</button>
+        <div id="edit-result-contactsreturn"></div>
+
+        <h2>Смена адреса</h2>
+        <input type="text" id="edit-contactstextadres-title" placeholder="Введите текст нового адреса">
+        <input type="text" id="edit-contactshrefadres-title" placeholder="Введите ссылку нового адреса">
+        <input type="text" id="edit-contactshrefmapadres-title" placeholder="Введите ссылку новой картинки адреса">
+        <button id="edit-contactsadres-btn-load">Обновить текст</button>
+        <div id="edit-result-contactsadres"></div>
+
+        <h2>Смена текста контактов</h2>
+        <textarea id="edit-contactstextinfo-title" placeholder="Введите текст для страницы контактов"></textarea>
+        <button id="edit-contactstextinfo-btn-load">Обновить текст</button>
+        <div id="edit-result-contactstextinfo"></div>
+    </div>
+
+    <div class="check-order-container" id="check-order-container" style="display: none;">
+        <button id="back-btn-checkorder">← Назад</button>
+        <h2>Заказы</h2>
+        <input type="text" id="check-order-list" placeholder="Введите заказ">
+        <button id="check-order-btn">Поиск</button>
+        <div id="order-result"></div>
+    </div>
+
+    <div class="attribute-editor-container" id="attribute-editor-container" style="display: none;">
+        <button id="back-btn-attributes">← Назад</button>
+        <h2>Редактирование атрибутов</h2>
+        <div id="attribute-categories">
+            <!-- Сюда будет динамически подгружаться список категорий и атрибутов -->
+        </div>
+        <button id="save-attributes-btn">Сохранить изменения</button>
+    </div>
+
+    <!-- Интерфейс редактирования рекламы -->
+    <div class="edit-ads-container" id="edit-ads-container" style="display: none;">
+        <button id="back-btn">← Назад</button>
+        <h2>Реклама</h2>
+        <div class="ad-fields">
+            <div class="ad-field" data-path="items/advert/header/head_first.png" data-width="1371" data-height="485">
+                <img src="items/advert/header/head_first.png" alt="Реклама 1">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/header/head_second.png" data-width="1371" data-height="485">
+                <img src="items/advert/header/head_second.png" alt="Реклама 2">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/header/head_third.png" data-width="1371" data-height="485">
+                <img src="items/advert/header/head_third.png" alt="Реклама 3">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/middle/middle_first.png" data-width="557" data-height="229">
+                <img src="items/advert/middle/middle_first.png" alt="Реклама 4">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/middle/middle_second.png" data-width="260" data-height="229">
+                <img src="items/advert/middle/middle_second.png" alt="Реклама 5">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/middle/middle_third.png" data-width="260" data-height="229">
+                <img src="items/advert/middle/middle_third.png" alt="Реклама 6">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/middle/middle_fourth.png" data-width="260" data-height="229">
+                <img src="items/advert/middle/middle_fourth.png" alt="Реклама 7">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/bottom/bottom_first.png" data-width="681" data-height="229">
+                <img src="items/advert/bottom/bottom_first.png" alt="Реклама 8">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/advert/bottom/bottom_second.png" data-width="681" data-height="229">
+                <img src="items/advert/bottom/bottom_second.png" alt="Реклама 9">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+        </div>
+        <h2>Бренды</h2>
+        <div class="ad-fields">
+            <div class="ad-field" data-path="items/brands/1.png" data-width="96" data-height="53">
+                <img src="items/brands/1.png" alt="Бренд 1">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/2.png" data-width="96" data-height="53">
+                <img src="items/brands/2.png" alt="Бренд 2">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/3.png" data-width="96" data-height="53">
+                <img src="items/brands/3.png" alt="Бренд 3">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/4.png" data-width="96" data-height="53">
+                <img src="items/brands/4.png" alt="Бренд 4">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/5.png" data-width="96" data-height="53">
+                <img src="items/brands/5.png" alt="Бренд 5">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/6.png" data-width="96" data-height="53">
+                <img src="items/brands/6.png" alt="Бренд 6">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/7.png" data-width="96" data-height="53">
+                <img src="items/brands/7.png" alt="Бренд 7">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+            <div class="ad-field" data-path="items/brands/8.png" data-width="96" data-height="53">
+                <img src="items/brands/8.png" alt="Бренд 8">
+                <input type="file" accept=".png" class="file-input">
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <div class="manage-products-container" id="manage-products-container" style="display: none;">
+        <button id="back-btn-products">← Назад</button>
+        <h2>Добавление/Редактирование товара</h2>
+        <div class="product-form">
+            <!-- Поле выбора категории -->
+            <label for="category-select">Выберите категорию:</label>
+            <select id="category-select">
+                <option value="" disabled selected>Выберите категорию</option>
+                <option value="matherbords">Материнские платы</option>
+                <option value="cpu">Процессоры</option>
+                <option value="ram">Оперативная память</option>
+                <option value="hddssd">Хранение данных</option>
+                <option value="cases">Корпуса</option>
+                <option value="pc">Готовые ПК</option>
+            </select>
+    
+            <!-- Основные поля товара -->
+            <label for="product-title">Название товара:</label>
+            <input type="text" id="product-title" placeholder="Введите название товара" />
+            <button id="search-product-btn">Поиск по названию</button>
+    
+            <label for="product-description">Описание:</label>
+            <textarea id="product-description"
+            placeholder="Введите описание товара"
+            maxlength="135"
+            oninput="updateRemainingChars(this, 'description-counter', 135)"></textarea>
+            <span id="description-counter" class="char-counter">Осталось символов: 135</span>
+    
+            <label for="product-full-description">Полное описание:</label>
+            <textarea id="product-full-description" 
+            placeholder="Введите полное описание товара"
+            maxlength="500"
+            oninput="updatSeRemainingChars(this, 'full-description-counter', 500)"></textarea>
+            <span id="full-description-counter" class="char-counter">Осталось символов: 500</span>
+    
+            <label for="product-price">Цена:</label>
+            <input type="number" id="product-price" placeholder="Введите цену товара" />
+
+            <label for="product-quantity">Количество:</label>
+            <input type="number" id="product-quantity" placeholder="Введите количество" />
+    
+            <label for="product-status">Статус товара:</label>
+            <select id="product-status">
+                <option value="discount">Дисконт</option>
+                <option value="damagedpackage">Поврежденная упаковка</option>
+                <option value="minordefects">Мелкие дефекты</option>
+            </select>
+
+            <label for="product-availability">В наличии:</label>
+            <select id="product-availability">
+                <option value="instock">В наличии</option>
+                <option value="preordertomorrow">Под заказ: Завтра</option>
+                <option value="preorderlater">Под заказ: Позже</option>
+            </select>
+    
+            <label for="product-images">Изображения товара:</label>
+            <input type="file" id="product-images" accept="image/*" multiple />
+    
+            <!-- Динамические характеристики в зависимости от категории -->
+            <div id="characteristics-container"></div>
+    
+            <!-- Кнопка для добавления товара -->
+            <button id="save-product-btn">Сохранить товар</button>
+        </div>
+    </div>
+
+    <div class="delete-products-container" id="delete-products-container" style="display: none;">
+        <button id="back-btn-delete">← Назад</button>
+        <h2>Удаление товара</h2>
+        <input type="text" id="product-delete-title" placeholder="Введите название товара">
+        <button id="delete-product-btn">Удалить товар</button>
+        <div id="delete-result"></div>
+    </div>
+    
+    
+
+<script src="js/cache.js"></script>
+<script src="js/TechWorks.js"></script>
+</body>
+</html>
