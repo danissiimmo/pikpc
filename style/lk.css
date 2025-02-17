@@ -1,0 +1,15 @@
+#edit-name, #edit-email, #edit-password, #edit-birthdate {
+    width: 300px;
+    padding: 10px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#edit-name:focus, #edit-email:focus, #edit-password:focus, #edit-birthdate:focus {
+    border-color: #005BFF;
+    outline: none;
+}
